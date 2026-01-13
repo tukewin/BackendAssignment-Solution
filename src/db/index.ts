@@ -4,7 +4,7 @@ import { Sequelize } from 'sequelize'
 import defineExercise from './exercise'
 import defineProgram from './program'
 
-const sequelize: Sequelize = new Sequelize('postgresql://localhost:5432/fitness_app', {
+const sequelize: Sequelize = new Sequelize('postgresql://postgres:postgres@localhost:5432/fitness_app', {
 	logging: false
 })
 
@@ -18,12 +18,10 @@ const models = {
 	Program
 }
 type Models = typeof models
-
-// check if every model is imported
 const modelsFiles = fs.readdirSync(__dirname)
-// -1 because index.ts can not be counted
+
 if (Object.keys(models).length !== (modelsFiles.length - 1)) {
-	throw new Error('You probably forgot import database model!')
+	throw new Error('Missing model import')
 }
 
 Object.values(models).forEach((value: any) => {

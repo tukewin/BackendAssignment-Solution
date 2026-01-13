@@ -2,13 +2,18 @@ import http from 'http'
 import express from 'express'
 
 import { sequelize } from './db'
+import passport from './middlewares/auth'
 import ProgramRouter from './routes/programs'
 import ExerciseRouter from './routes/exercises'
+import AuthRouter from './routes/auth'
 
 const app = express()
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.use(passport.initialize())
+
+app.use('/auth', AuthRouter())
 app.use('/programs', ProgramRouter())
 app.use('/exercises', ExerciseRouter())
 

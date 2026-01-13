@@ -6,6 +6,7 @@ import passport from './middlewares/auth'
 import ProgramRouter from './routes/programs'
 import ExerciseRouter from './routes/exercises'
 import AuthRouter from './routes/auth'
+import AdminUsersRouter from './routes/admin/users'
 
 const app = express()
 
@@ -16,6 +17,7 @@ app.use(passport.initialize())
 app.use('/auth', AuthRouter())
 app.use('/programs', ProgramRouter())
 app.use('/exercises', ExerciseRouter())
+app.use('/admin/users', AdminUsersRouter())
 
 const httpServer = http.createServer(app)
 

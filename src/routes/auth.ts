@@ -3,18 +3,16 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { models } from '../db'
 import config from '../config'
+import { validate } from '../middlewares/validation'
+import { registerSchema, loginSchema } from '../validators/auth'
 
 const router = Router()
 const { User } = models
 
 export default () => {
-	router.post('/register', async (req: Request, res: Response): Promise<any> => {
+	router.post('/register', validate(registerSchema), async (req: Request, res: Response): Promise<any> => {
 		try {
 			const { email, password, role, name, surname, nickName, age } = req.body
-
-			if (!email || !password) {
-				return res.status(400).json({ data: null, message: 'Email and password required' })
-			}
 
 			const existing = await User.findOne({ where: { email } })
 			if (existing) {
@@ -44,14 +42,9 @@ export default () => {
 		}
 	})
 
-	router.post('/login', async (req: Request, res: Response): Promise<any> => {
+	router.post('/login', validate(loginSchema), async (req: Request, res: Response): Promise<any> => {
 		try {
 			const { email, password } = req.body
-
-			if (!email || !password) {
-				return res.status(400).json({ data: null, message: 'Email and password required' })
-			}
-
 			const user = await User.findOne({ where: { email } }) as any
 			if (!user) {
 				return res.status(401).json({ data: null, message: 'Invalid credentials' })

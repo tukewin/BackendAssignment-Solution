@@ -2,12 +2,14 @@ import { Router, Request, Response } from 'express'
 import { Op } from 'sequelize'
 import { models } from '../db'
 import { authenticate, isAdmin } from '../middlewares/auth'
+import { validate } from '../middlewares/validation'
+import { createExerciseSchema, updateExerciseSchema, exerciseQuerySchema } from '../validators/exercise'
 
 const router = Router()
 const { Exercise, Program } = models
 
 export default () => {
-	router.get('/', async (req: Request, res: Response): Promise<any> => {
+	router.get('/', validate(exerciseQuerySchema, 'query'), async (req: Request, res: Response): Promise<any> => {
 		try {
 			const { page, limit, programID, search } = req.query
 
@@ -45,7 +47,7 @@ export default () => {
 		}
 	})
 
-	router.post('/', authenticate, isAdmin, async (req: Request, res: Response): Promise<any> => {
+	router.post('/', authenticate, isAdmin, validate(createExerciseSchema), async (req: Request, res: Response): Promise<any> => {
 		try {
 			const { name, difficulty, programID } = req.body
 			const exercise = await Exercise.create({ name, difficulty, programID })
@@ -56,7 +58,7 @@ export default () => {
 		}
 	})
 
-	router.put('/:id', authenticate, isAdmin, async (req: Request, res: Response): Promise<any> => {
+	router.put('/:id', authenticate, isAdmin, validate(updateExerciseSchema), async (req: Request, res: Response): Promise<any> => {
 		try {
 			const { id } = req.params
 			const { name, difficulty, programID } = req.body

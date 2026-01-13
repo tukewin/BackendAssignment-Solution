@@ -4,6 +4,7 @@ import express from 'express'
 import { sequelize } from './db'
 import passport from './middlewares/auth'
 import { localization } from './middlewares/localization'
+import { errorHandler } from './middlewares/errorHandler'
 import ProgramRouter from './routes/programs'
 import ExerciseRouter from './routes/exercises'
 import AuthRouter from './routes/auth'
@@ -22,6 +23,8 @@ app.use('/programs', ProgramRouter())
 app.use('/exercises', ExerciseRouter())
 app.use('/admin/users', AdminUsersRouter())
 app.use('/users', UsersRouter())
+
+app.use(errorHandler)
 
 const httpServer = http.createServer(app)
 

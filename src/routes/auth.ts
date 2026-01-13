@@ -16,7 +16,7 @@ export default () => {
 
 			const existing = await User.findOne({ where: { email } })
 			if (existing) {
-				return res.status(400).json({ data: null, message: 'Email already exists' })
+				return res.status(400).json({ data: null, message: req.t('email_exists') })
 			}
 
 			const hashedPassword = await bcrypt.hash(password, 10)
@@ -34,11 +34,11 @@ export default () => {
 
 			return res.status(201).json({
 				data: { id: user.id, token },
-				message: 'Registration successful'
+				message: req.t('registration_successful')
 			})
 		} catch (err) {
 			console.error(err)
-			return res.status(500).json({ data: null, message: 'Something went wrong' })
+			return res.status(500).json({ data: null, message: req.t('something_went_wrong') })
 		}
 	})
 
@@ -47,23 +47,23 @@ export default () => {
 			const { email, password } = req.body
 			const user = await User.findOne({ where: { email } }) as any
 			if (!user) {
-				return res.status(401).json({ data: null, message: 'Invalid credentials' })
+				return res.status(401).json({ data: null, message: req.t('invalid_credentials') })
 			}
 
 			const valid = await bcrypt.compare(password, user.password)
 			if (!valid) {
-				return res.status(401).json({ data: null, message: 'Invalid credentials' })
+				return res.status(401).json({ data: null, message: req.t('invalid_credentials') })
 			}
 
 			const token = jwt.sign({ id: user.id }, config.jwtSecret, { expiresIn: config.jwtExpiresIn })
 
 			return res.json({
 				data: { id: user.id, token },
-				message: 'Login successful'
+				message: req.t('login_successful')
 			})
 		} catch (err) {
 			console.error(err)
-			return res.status(500).json({ data: null, message: 'Something went wrong' })
+			return res.status(500).json({ data: null, message: req.t('something_went_wrong') })
 		}
 	})
 

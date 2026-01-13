@@ -8,15 +8,15 @@ const { User, CompletedExercise, Exercise } = models
 export default () => {
 	router.use(authenticate)
 
-	router.get('/', async (_req: Request, res: Response): Promise<any> => {
+	router.get('/', async (req: Request, res: Response): Promise<any> => {
 		try {
 			const users = await User.findAll({
 				attributes: ['id', 'nickName']
 			})
-			return res.json({ data: users, message: 'List of users' })
+			return res.json({ data: users, message: req.t('list_users') })
 		} catch (err) {
 			console.error(err)
-			return res.status(500).json({ data: null, message: 'Something went wrong' })
+			return res.status(500).json({ data: null, message: req.t('something_went_wrong') })
 		}
 	})
 
@@ -34,11 +34,11 @@ export default () => {
 
 			return res.json({
 				data: { ...profile?.toJSON(), completedExercises },
-				message: 'User profile'
+				message: req.t('user_profile')
 			})
 		} catch (err) {
 			console.error(err)
-			return res.status(500).json({ data: null, message: 'Something went wrong' })
+			return res.status(500).json({ data: null, message: req.t('something_went_wrong') })
 		}
 	})
 
@@ -49,7 +49,7 @@ export default () => {
 
 			const exercise = await Exercise.findByPk(exerciseID)
 			if (!exercise) {
-				return res.status(404).json({ data: null, message: 'Exercise not found' })
+				return res.status(404).json({ data: null, message: req.t('exercise_not_found') })
 			}
 
 			const completed = await CompletedExercise.create({
@@ -59,10 +59,10 @@ export default () => {
 				completedAt: new Date()
 			})
 
-			return res.status(201).json({ data: completed, message: 'Exercise tracked' })
+			return res.status(201).json({ data: completed, message: req.t('exercise_tracked') })
 		} catch (err) {
 			console.error(err)
-			return res.status(500).json({ data: null, message: 'Something went wrong' })
+			return res.status(500).json({ data: null, message: req.t('something_went_wrong') })
 		}
 	})
 
@@ -73,10 +73,10 @@ export default () => {
 				where: { userID: user.id },
 				include: [{ model: Exercise }]
 			})
-			return res.json({ data: exercises, message: 'Completed exercises' })
+			return res.json({ data: exercises, message: req.t('completed_exercises') })
 		} catch (err) {
 			console.error(err)
-			return res.status(500).json({ data: null, message: 'Something went wrong' })
+			return res.status(500).json({ data: null, message: req.t('something_went_wrong') })
 		}
 	})
 
@@ -89,14 +89,14 @@ export default () => {
 				where: { id, userID: user.id }
 			})
 			if (!completed) {
-				return res.status(404).json({ data: null, message: 'Record not found' })
+				return res.status(404).json({ data: null, message: req.t('record_not_found') })
 			}
 
 			await completed.destroy()
-			return res.json({ data: null, message: 'Record deleted' })
+			return res.json({ data: null, message: req.t('record_deleted') })
 		} catch (err) {
 			console.error(err)
-			return res.status(500).json({ data: null, message: 'Something went wrong' })
+			return res.status(500).json({ data: null, message: req.t('something_went_wrong') })
 		}
 	})
 

@@ -27,7 +27,7 @@ export const authenticate = passport.authenticate('jwt', { session: false })
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
 	const user = req.user as any
 	if (user?.role !== USER_ROLE.ADMIN) {
-		return res.status(403).json({ data: null, message: 'Access denied' })
+		return res.status(403).json({ data: null, message: req.t('access_denied') })
 	}
 	next()
 }
@@ -35,7 +35,7 @@ export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
 export const isUser = (req: Request, res: Response, next: NextFunction) => {
 	const user = req.user as any
 	if (!user) {
-		return res.status(403).json({ data: null, message: 'Access denied' })
+		return res.status(403).json({ data: null, message: req.t('access_denied') })
 	}
 	next()
 }

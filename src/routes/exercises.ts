@@ -39,11 +39,11 @@ export default () => {
 				total: exercises.count,
 				page: page ? Number(page) : 1,
 				limit: limit ? Number(limit) : exercises.count,
-				message: 'List of exercises'
+				message: req.t('list_exercises')
 			})
 		} catch (err) {
 			console.error(err)
-			return res.status(500).json({ data: null, message: 'Something went wrong' })
+			return res.status(500).json({ data: null, message: req.t('something_went_wrong') })
 		}
 	})
 
@@ -51,10 +51,10 @@ export default () => {
 		try {
 			const { name, difficulty, programID } = req.body
 			const exercise = await Exercise.create({ name, difficulty, programID })
-			return res.status(201).json({ data: exercise, message: 'Exercise created' })
+			return res.status(201).json({ data: exercise, message: req.t('exercise_created') })
 		} catch (err) {
 			console.error(err)
-			return res.status(500).json({ data: null, message: 'Something went wrong' })
+			return res.status(500).json({ data: null, message: req.t('something_went_wrong') })
 		}
 	})
 
@@ -64,13 +64,13 @@ export default () => {
 			const { name, difficulty, programID } = req.body
 			const exercise = await Exercise.findByPk(id)
 			if (!exercise) {
-				return res.status(404).json({ data: null, message: 'Exercise not found' })
+				return res.status(404).json({ data: null, message: req.t('exercise_not_found') })
 			}
 			await exercise.update({ name, difficulty, programID })
-			return res.json({ data: exercise, message: 'Exercise updated' })
+			return res.json({ data: exercise, message: req.t('exercise_updated') })
 		} catch (err) {
 			console.error(err)
-			return res.status(500).json({ data: null, message: 'Something went wrong' })
+			return res.status(500).json({ data: null, message: req.t('something_went_wrong') })
 		}
 	})
 
@@ -79,13 +79,13 @@ export default () => {
 			const { id } = req.params
 			const exercise = await Exercise.findByPk(id)
 			if (!exercise) {
-				return res.status(404).json({ data: null, message: 'Exercise not found' })
+				return res.status(404).json({ data: null, message: req.t('exercise_not_found') })
 			}
 			await exercise.destroy()
-			return res.json({ data: null, message: 'Exercise deleted' })
+			return res.json({ data: null, message: req.t('exercise_deleted') })
 		} catch (err) {
 			console.error(err)
-			return res.status(500).json({ data: null, message: 'Something went wrong' })
+			return res.status(500).json({ data: null, message: req.t('something_went_wrong') })
 		}
 	})
 

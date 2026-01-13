@@ -6,9 +6,9 @@ const router = Router()
 const { Program, Exercise } = models
 
 export default () => {
-	router.get('/', async (_req: Request, res: Response): Promise<any> => {
+	router.get('/', async (req: Request, res: Response): Promise<any> => {
 		const programs = await Program.findAll()
-		return res.json({ data: programs, message: 'List of programs' })
+		return res.json({ data: programs, message: req.t('list_programs') })
 	})
 
 	router.post('/:id/exercises', authenticate, isAdmin, async (req: Request, res: Response): Promise<any> => {
@@ -17,13 +17,13 @@ export default () => {
 			const { exerciseId } = req.body
 			const exercise = await Exercise.findByPk(exerciseId)
 			if (!exercise) {
-				return res.status(404).json({ data: null, message: 'Exercise not found' })
+				return res.status(404).json({ data: null, message: req.t('exercise_not_found') })
 			}
 			await exercise.update({ programID: id })
-			return res.json({ data: exercise, message: 'Exercise added to program' })
+			return res.json({ data: exercise, message: req.t('exercise_added') })
 		} catch (err) {
 			console.error(err)
-			return res.status(500).json({ data: null, message: 'Something went wrong' })
+			return res.status(500).json({ data: null, message: req.t('something_went_wrong') })
 		}
 	})
 
@@ -32,13 +32,13 @@ export default () => {
 			const { exerciseId } = req.params
 			const exercise = await Exercise.findByPk(exerciseId)
 			if (!exercise) {
-				return res.status(404).json({ data: null, message: 'Exercise not found' })
+				return res.status(404).json({ data: null, message: req.t('exercise_not_found') })
 			}
 			await exercise.destroy()
-			return res.json({ data: null, message: 'Exercise removed from program' })
+			return res.json({ data: null, message: req.t('exercise_removed') })
 		} catch (err) {
 			console.error(err)
-			return res.status(500).json({ data: null, message: 'Something went wrong' })
+			return res.status(500).json({ data: null, message: req.t('something_went_wrong') })
 		}
 	})
 

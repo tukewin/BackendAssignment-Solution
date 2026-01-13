@@ -36,8 +36,7 @@ export default () => {
 				data: { id: user.id, token },
 				message: req.t('registration_successful')
 			})
-		} catch (err) {
-			console.error(err)
+		} catch (e) {
 			return res.status(500).json({ data: null, message: req.t('something_went_wrong') })
 		}
 	})

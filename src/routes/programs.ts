@@ -12,34 +12,24 @@ export default () => {
 	})
 
 	router.post('/:id/exercises', authenticate, isAdmin, async (req: Request, res: Response): Promise<any> => {
-		try {
-			const { id } = req.params
-			const { exerciseId } = req.body
-			const exercise = await Exercise.findByPk(exerciseId)
-			if (!exercise) {
-				return res.status(404).json({ data: null, message: req.t('exercise_not_found') })
-			}
-			await exercise.update({ programID: id })
-			return res.json({ data: exercise, message: req.t('exercise_added') })
-		} catch (err) {
-			console.error(err)
-			return res.status(500).json({ data: null, message: req.t('something_went_wrong') })
+		const { id } = req.params
+		const { exerciseId } = req.body
+		const exercise = await Exercise.findByPk(exerciseId)
+		if (!exercise) {
+			return res.status(404).json({ data: null, message: req.t('exercise_not_found') })
 		}
+		await exercise.update({ programID: id })
+		return res.json({ data: exercise, message: req.t('exercise_added') })
 	})
 
 	router.delete('/:id/exercises/:exerciseId', authenticate, isAdmin, async (req: Request, res: Response): Promise<any> => {
-		try {
-			const { exerciseId } = req.params
-			const exercise = await Exercise.findByPk(exerciseId)
-			if (!exercise) {
-				return res.status(404).json({ data: null, message: req.t('exercise_not_found') })
-			}
-			await exercise.destroy()
-			return res.json({ data: null, message: req.t('exercise_removed') })
-		} catch (err) {
-			console.error(err)
-			return res.status(500).json({ data: null, message: req.t('something_went_wrong') })
+		const { exerciseId } = req.params
+		const exercise = await Exercise.findByPk(exerciseId)
+		if (!exercise) {
+			return res.status(404).json({ data: null, message: req.t('exercise_not_found') })
 		}
+		await exercise.destroy()
+		return res.json({ data: null, message: req.t('exercise_removed') })
 	})
 
 	return router

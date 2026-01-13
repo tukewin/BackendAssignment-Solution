@@ -24,9 +24,9 @@ const models = {
 	CompletedExercise
 }
 type Models = typeof models
-const modelsFiles = fs.readdirSync(__dirname)
 
-if (Object.keys(models).length !== (modelsFiles.length - 1)) {
+const modelsFiles = fs.readdirSync(__dirname)
+if (Object.keys(models).length !== modelsFiles.length - 1) {
 	throw new Error('Missing model import')
 }
 

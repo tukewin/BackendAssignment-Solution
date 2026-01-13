@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express'
+import { Op } from 'sequelize'
 import { models } from '../db'
 import { authenticate, isAdmin } from '../middlewares/auth'
 
@@ -6,11 +7,42 @@ const router = Router()
 const { Exercise, Program } = models
 
 export default () => {
-	router.get('/', async (_req: Request, res: Response): Promise<any> => {
-		const exercises = await Exercise.findAll({
-			include: [{ model: Program }]
-		})
-		return res.json({ data: exercises, message: 'List of exercises' })
+	router.get('/', async (req: Request, res: Response): Promise<any> => {
+		try {
+			const { page, limit, programID, search } = req.query
+
+			const where: any = {}
+			if (programID) {
+				where.programID = programID
+			}
+			if (search) {
+				where.name = { [Op.iLike]: `%${search}%` }
+			}
+
+			const options: any = {
+				where,
+				include: [{ model: Program }]
+			}
+
+			if (page && limit) {
+				const offset = (Number(page) - 1) * Number(limit)
+				options.limit = Number(limit)
+				options.offset = offset
+			}
+
+			const exercises = await Exercise.findAndCountAll(options)
+
+			return res.json({
+				data: exercises.rows,
+				total: exercises.count,
+				page: page ? Number(page) : 1,
+				limit: limit ? Number(limit) : exercises.count,
+				message: 'List of exercises'
+			})
+		} catch (err) {
+			console.error(err)
+			return res.status(500).json({ data: null, message: 'Something went wrong' })
+		}
 	})
 
 	router.post('/', authenticate, isAdmin, async (req: Request, res: Response): Promise<any> => {

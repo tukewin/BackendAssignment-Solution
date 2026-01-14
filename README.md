@@ -153,3 +153,17 @@ response status code >= 500
 }
 ```
 
+***
+
+## Our bonus - Jest testing
+
+We have implemented Jest testing by our choice because we noticed GoodRequest lists Jest in their technology stack. The test suite covers:
+
+- **Auth validators** - Registration and login schema validation (email format, password requirements, role validation)
+- **Exercise validators** - Create/update exercise validation, query params for pagination and filtering
+- **Error handler middleware** - AppError class behavior, status code handling, localization fallback
+
+Run tests with:
+```bash
+npm test
+```
